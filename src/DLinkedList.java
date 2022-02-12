@@ -1,6 +1,8 @@
 public class DLinkedList {
 
-	/* Insert Member Variables Here */
+	private DNode head;
+	private DNode tail;
+	int size;
 
 	public DLinkedList() {
 		/* Complete this method */

@@ -56,6 +56,15 @@ public class LinkedListLab {
 	}
 
 	public int[] toArray() {
-		/* Complete this method */
+		int[] list;
+		list = new int[size];
+		if (!isEmpty()) {
+			Node temp = head;
+			for (int i = 0; temp != null; i++) {
+				list[i] = temp.getData();
+				temp = temp.getLink();
+			}
+		}
+		return list;
 	}
 }
