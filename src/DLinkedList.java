@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class DLinkedList {
 
 	private DNode head;
@@ -30,7 +28,7 @@ public class DLinkedList {
 	
 	public boolean remove() {
 		if (isEmpty()) {
-			System.out.println("Cannot remove. List is already empty");
+			System.out.println("Cannot remove tail. List is already empty");
 			return false;
 		}
 		if (size == 1) {
@@ -46,17 +44,18 @@ public class DLinkedList {
 	
 	public boolean remove(int n) {
 		if (isEmpty()) { // If empty, don't try and remove.
-			System.out.println("Cannot remove. List is already empty");
+			System.out.println("Cannot remove [" + n + "]. List is already empty");
 			return false;
 		}
 		if (size == 1) {
 			if (head.getData() != n) { // If size 1 but n doesn't match the data, don't remove.
-				System.out.println("Specified integer not found. Failed to remove.");
+				System.out.println("Cannot remove. [" + n + "] not found.");
 				return false;
 			}
 			// Otherwise, remove.
 			head = tail = null;
 			size = 0;
+			return true;
 		} else {
 			DNode temp = head;
 			if (temp != null && temp.getData() == n) { // In case the first entry is n.
@@ -64,59 +63,56 @@ public class DLinkedList {
 				size--;
 				return true;
 			}
-			while (temp.getNextLink() != null) {
+			while (temp != null) {
 				if (temp.getData() == n) {
 					temp.getPrevLink().setNextLink(temp.getNextLink()); // Bridge the previous link forwards over the temp.
 					temp.getNextLink().setPrevLink(temp.getPrevLink()); // Bridge the next link backwards over the temp.
 					size--;
 					return true;
 				}
-			}
-			if (tail.getData() == n) { // The while loop won't ever check the tail. This checks the tail at the end.
-				tail = tail.getPrevLink();
-				tail.getNextLink().setPrevLink(null);
-				tail.setNextLink(null);
-				size--;
-				return true;
+				temp = temp.getNextLink();
 			}
 		}
-		System.out.println("Specified integer not found. Failed to remove.");
-		return false; // If the list isn't empty, it isn't 1 with a matching value, the value isn't found from head to tail - 1, and thw tail isn't the value. It must not exist.
+		System.out.println("Cannot remove. [" + n + "] not found.");
+		return false; // If the list isn't empty, it isn't of size 1 with a matching value, and the value isn't found from head to tail then it must not exist.
 	}
 
 	String toStringForward() {
 		String result;
-		int[] list;
-		list = new int[size];
+		StringBuilder s = new StringBuilder();
 		if (!isEmpty()) {
 			DNode temp = head;
 			for (int i = 0; temp != null; i++) {
-				list[i] = temp.getData();
+				s.append(temp.getData());
+				if (temp.getNextLink() != null)
+					s.append(" ");
 				temp = temp.getNextLink();
 			}
-			result = Arrays.toString(list);
+			result = s.toString();
 		} else {
-			result = "List is empty.";
+			result = "Cannot print. List is empty.";
 		}
 		return result;
 	}
 
 	String toStringReverse() {
 		String result;
-		int[] list;
-		list = new int[size];
+		StringBuilder s = new StringBuilder();
 		if (!isEmpty()) {
 			DNode temp = tail;
 			for (int i = 0; temp != null; i++) {
-				list[i] = temp.getData();
+				s.append(temp.getData());
+				if (temp.getPrevLink() != null)
+					s.append(" ");
 				temp = temp.getPrevLink();
 			}
-			result = Arrays.toString(list);
+			result = s.toString();
 		} else {
-			result = "List is empty.";
+			result = "Cannot print. List is empty.";
 		}
 		return result;
 	}
+
 
 	public static void main(String[] args) {
 		DLinkedList dll = new DLinkedList();

@@ -9,10 +9,7 @@ public class LinkedListLab {
 	}
 
 	public boolean isEmpty() {
-		if(size == 0)
-			return true;
-		else
-			return false;
+		return size == 0;
 	}
 
 	public void insert(int data) {
@@ -44,7 +41,7 @@ public class LinkedListLab {
 	
 	public void print() {
 		if(isEmpty())
-			System.out.println("List is empty.");
+			System.out.println("Cannot print. List is empty.");
 		else {
 			Node temp = head;
 			while(temp != null) {
