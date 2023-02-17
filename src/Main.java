@@ -33,10 +33,11 @@ class Stack {
     // the bool function was not being utilized.
     public void push(int x) {
         if (top >= (MAX - 1)) {
-            System.out.println("Stack overflow");
+            System.out.println("\nStack overflow");
+            displayStack();
         } else {
             array[++top] = new int[] {x};
-            System.out.println(x + " pushed into stack");
+            System.out.println("\n" + x + " pushed into stack");
             displayStack();
         }
     }
@@ -46,10 +47,11 @@ class Stack {
     // onto the stack.
     public void push(int x, int y) {
         if (top >= (MAX - 1)) {
-            System.out.println("Stack overflow");
+            System.out.println("\nStack overflow");
+            displayStack();
         } else {
             array[++top] = new int[] {x, y};
-            System.out.println("Pair (" + x + ", " + y + ") pushed to stack");
+            System.out.println("\nPair (" + x + ", " + y + ") pushed to stack");
             displayStack();
         }
     }
@@ -84,14 +86,20 @@ class Stack {
 class Main {
     public static void main(String[] args) {
         Stack stack = new Stack();
-        stack.push(1);
-        stack.push(2);
+        stack.push(1, 48392);
+        stack.push(2, 1);
         stack.push(3,5);
         stack.push(4,437);
+        stack.push(5, 0);
+        stack.push(5, 6);
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
         stack.push(5);
-        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
-        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
-        System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
+        stack.push(7,2);
         System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
         System.out.println("Popped item: " + Arrays.toString(stack.pop()) + "\n");
     }
