@@ -34,21 +34,21 @@ public class Main {
 
         // 1000 runs for testing of average time.
         for (int i = 0; i < 1000; i++) {
+            namesQuick = names.clone();
+            scoresQuick = scores.clone();
             long startTime = System.nanoTime();
             quickSort(namesQuick, scoresQuick, 0, scores.length - 1);
             long endTime = System.nanoTime();
             totalTime += endTime - startTime;
-            namesQuick = names.clone();
-            scoresQuick = scores.clone();
         }
 
         for (int i = 0; i < 1000; i++) {
+            namesBubble = names.clone();
+            scoresBubble = scores.clone();
             long startTime = System.nanoTime();
             bubbleSort(namesBubble, scoresBubble);
             long endTime = System.nanoTime();
             totalTimeBubble += endTime - startTime;
-            namesBubble = names.clone();
-            scoresBubble = scores.clone();
         }
 
         if (verifySymmetry(namesQuick, scoresQuick)) {
@@ -123,7 +123,7 @@ public class Main {
         // for every value found within the array that is less than pivot, move it to splitPoint and increment
         // splitPoint
         for (int i = start; i < end; i++) {
-            if (scores[i] < scores[pivot]) {
+            if (scores[i] > scores[pivot]) {
                 swap(names, scores, i, splitPoint);
                 splitPoint++;
             }
