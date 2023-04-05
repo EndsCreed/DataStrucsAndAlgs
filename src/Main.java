@@ -1,7 +1,7 @@
 import java.util.HashMap;
 
 public class Main {
-    public static Players players;
+    public static HashMap<String, Integer> playerMap = new HashMap<>(); // Used for validation
     private static long totalTime = 0;
     private static long totalTimeBubble = 0;
 
@@ -23,44 +23,76 @@ public class Main {
                 50, 49, 95, 98, 88, 74, 85, 67, 72, 81, 79, 94, 73, 90, 61, 77, 83, 99,
                 76, 87, 56, 66, 59, 63, 69, 80, 89, 62 };
 
-        players = new Players(names.clone(), scores.clone());
+        for (int i = 0; i < names.length; i++) {
+            playerMap.put(names[i], scores[i]);
+        }
+
+        String[] namesQuick = names.clone();
+        int[] scoresQuick = scores.clone();
+        String[] namesBubble = names.clone();
+        int[] scoresBubble = scores.clone();
 
         // 1000 runs for testing of average time.
         for (int i = 0; i < 1000; i++) {
             long startTime = System.nanoTime();
-            quickSort(players.getScores(), 0, players.getScores().length - 1);
+            quickSort(namesQuick, scoresQuick, 0, scores.length - 1);
             long endTime = System.nanoTime();
             totalTime += endTime - startTime;
-            players.setNames(names); players.setScores(scores);
+            namesQuick = names.clone();
+            scoresQuick = scores.clone();
         }
 
         for (int i = 0; i < 1000; i++) {
             long startTime = System.nanoTime();
-            quickSort(players.getScores(), 0, players.getScores().length - 1);
+            bubbleSort(namesBubble, scoresBubble);
             long endTime = System.nanoTime();
             totalTimeBubble += endTime - startTime;
-            players.setNames(names); players.setScores(scores);
+            namesBubble = names.clone();
+            scoresBubble = scores.clone();
         }
 
-        if (players.verifySymmetry()) {
-            System.out.println("Sorted:\n");
-            for (int i = 0; i < players.getScores().length; i++) {
-                System.out.println(players.getNames()[i] + " | " + players.getScores()[i]);
+        if (verifySymmetry(namesQuick, scoresQuick)) {
+            System.out.println("Sorted Quick:");
+            for (int i = 0; i < scoresQuick.length; i++) {
+                System.out.println(namesQuick[i] + " | " + scoresQuick[i]);
             }
-            double averageTimeBubble = (double) totalTimeBubble / 1000;
+
+            for (int i = 0; i < scoresBubble.length; i++) {
+                playerMap.put(names[i], scores[i]);
+            }
+            if (!verifySymmetry(namesBubble, scoresBubble)) {
+                System.out.println("Bubble Sort Discrepancy!");
+                return;
+            }
+
+            System.out.println("\nSorted Buble:");
+            for (int i = 0; i < scoresBubble.length; i++) {
+                System.out.println(namesBubble[i] + " | " + scoresBubble[i]);
+            }
             double averageTime = (double) totalTime / 1000;
-            System.out.println("Average time Bubble: " + averageTimeBubble + "\nAverage Time Quick: " + averageTime);
+            double averageTimeBubble = (double) totalTimeBubble / 1000;
+            System.out.println("Average Time Quick: " + averageTime + "\nAverage time Bubble: " + averageTimeBubble);
         } else
             System.out.println("There was a discrepancy!");
     }
 
+    public static void swap(String[] names, int[] scores, int a, int b) {
+        String tempS = names[a];
+        names[a] = names[b];
+        names[b] = tempS;
+
+        int tempI = scores[a];
+        scores[a] = scores[b];
+        scores[b] = tempI;
+    }
+
     // This method will move the median value to the end of the array to use as the pivot
-    public static void chooseMedianPivot(int[] array, int start, int end) {
+    public static void chooseMedianPivot(String[] names, int[] scores, int start, int end) {
         int middle = start + (end - start) / 2; // get middle index (not done yet)
 
-        int startValue = array[start];
-        int middleValue = array[middle];
-        int endValue = array[end];
+        int startValue = scores[start];
+        int middleValue = scores[middle];
+        int endValue = scores[end];
         int index;
 
         System.out.println("StartValue: " + startValue + "\nMiddleValue: " + middleValue + "\nEndValue: " + endValue);
@@ -75,14 +107,14 @@ public class Main {
         else
             index = middle;
 
-        players.swap(end, index);
+        swap(names, scores, end, index);
 
-        System.out.println("Chosen Middle: " + players.getScores()[end]);
+        System.out.println("Chosen Middle: " + scores[end]);
     }
 
-    public static int split(int[] array, int start, int end) {
+    public static int split(String[] names, int[] scores, int start, int end) {
         if ((start - end) > 2)
-            chooseMedianPivot(array, start, end); // Set last index to median of 3 value.
+            chooseMedianPivot(names, scores, start, end); // Set last index to median of 3 value.
 
         int pivot = end; // Pivot on the last index.
 
@@ -91,25 +123,25 @@ public class Main {
         // for every value found within the array that is less than pivot, move it to splitPoint and increment
         // splitPoint
         for (int i = start; i < end; i++) {
-            if (array[i] < array[pivot]) {
-                players.swap(i, splitPoint);
+            if (scores[i] < scores[pivot]) {
+                swap(names, scores, i, splitPoint);
                 splitPoint++;
             }
         }
 
-        players.swap(pivot, splitPoint); // Move pivot to after last swap and return split pos
+        swap(names, scores, pivot, splitPoint); // Move pivot to after last swap and return split pos
         return splitPoint;
     }
 
-    public static void quickSort(int[] array, int start, int end) {
+    public static void quickSort(String[] names, int[] scores, int start, int end) {
         // If start is greater than end (more than 1 element in array), call split method to
         // sort around the value found in its median of 3 method, then return the pivot. Take the
         // two halves around this pivot and recursively run again.
         if (start < end) {
-            int pivot = split(array, start, end);
+            int pivot = split(names, scores, start, end);
 
-            quickSort(array, start, pivot-1);
-            quickSort(array, pivot+1, end);
+            quickSort(names, scores, start, pivot-1);
+            quickSort(names, scores, pivot+1, end);
         }
     }
 
@@ -130,42 +162,8 @@ public class Main {
             }
         }
     }
-}
 
-class Players {
-    private String[] names;
-    private int[] scores;
-    private HashMap<String, Integer> playerMap = new HashMap<>();
-
-    public Players(String[] names, int[] scores) {
-        this.names = names;
-        this.scores = scores;
-        for (int i = 0; i < names.length && i < scores.length; i++) {
-            addPlayer(this.names[i], this.scores[i]);
-        }
-    }
-
-    // Swap values at 2 indexes on both arrays simultaneously.
-    public void swap(int a, int b) {
-        String tempS = names[a];
-        names[a] = names[b];
-        names[b] = tempS;
-
-        int tempI = scores[a];
-        scores[a] = scores[b];
-        scores[b] = tempI;
-    }
-
-    // Method to check that my quicksort is sorting and not losing/duplicating values.
-    // Since all the names in the array are unique, we can iterate through the names array and check
-    // first, if it's already contained in the map, and second, if the value associated with that name in the
-    // map matches the value found in the score array with the same index of the name in the names array.
-    // If the name is contained in the map that means it hasn't been compared yet. Once compared, we remove it
-    // to signify that it has been checked. Should the same name show up again, we know the name was somehow duplicated
-    // as there is no key to match it to and there was only one occurrence of that name.
-    // Lastly, we check if the map is empty. If it is empty, then all checks have passed and the before and after
-    // sort values and connections have remained intact.
-    public boolean verifySymmetry() {
+    public static boolean verifySymmetry(String[] names, int[] scores) {
         for (int i = 0; i < scores.length; i++) {
             if (playerMap.containsKey(names[i]) && playerMap.get(names[i]) == scores[i])
                 playerMap.remove(names[i]);
@@ -174,12 +172,4 @@ class Players {
         }
         return playerMap.isEmpty();
     }
-
-    public void addPlayer(String name, int score) {
-        playerMap.put(name, score);
-    }
-    public void setNames(String[] names) { this.names = names; }
-    public void setScores(int[] scores) { this.scores = scores; }
-    public String[] getNames() { return names; }
-    public int[] getScores() { return scores; }
 }
