@@ -34,11 +34,21 @@ class CustomHashTable {
 // TODO: Implement this method
     }
     public void printFrequenciesDescending() {
-// TODO: Implement this method
+
     }
     private int hash(String key) {
-// TODO: Implement a more effective hash function
-        return key.length() % table.length;
+        char[] keyChars = key.toCharArray();
+        int hash = 0;
+        int multiplier = 0;
+        for (int i = 0; i < key.length(); i++) {
+            if (i == 0 || i == (key.length()-1))
+                multiplier += keyChars[i];
+            if (i == ((key.length() - 1)/2))
+                multiplier -= keyChars[i];
+            hash += keyChars[i];
+        }
+        hash *= multiplier;
+        return hash;
     }
 }
 class WordFrequency {
@@ -81,7 +91,7 @@ class Node {
     Node left;
     Node right;
     Node parent;
-
-
 }
+
+// TODO implement an AVL tree using the hash values.
 
