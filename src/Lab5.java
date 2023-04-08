@@ -36,18 +36,17 @@ class CustomHashTable {
     public void printFrequenciesDescending() {
 
     }
+
+    // Hashing using Horner's Method.
     private int hash(String key) {
         char[] keyChars = key.toCharArray();
         int hash = 0;
-        int multiplier = 0;
+        int MULT = 33;
+        int MAX = 1049;
         for (int i = 0; i < key.length(); i++) {
-            if (i == 0 || i == (key.length()-1))
-                multiplier += keyChars[i];
-            if (i == ((key.length() - 1)/2))
-                multiplier -= keyChars[i];
-            hash += keyChars[i];
+            int value = (int) key.charAt(i);
+            hash = ((value * MULT) + value) % MAX;
         }
-        hash *= multiplier;
         return hash;
     }
 }
@@ -95,3 +94,56 @@ class Node {
 
 // TODO implement an AVL tree using the hash values.
 
+class QuickSort {
+    WordFrequency[] words;
+
+    public void quickSort(WordFrequency[] wordsIn, int start, int end) {
+        if (start < end) {
+            int pivot = split(wordsIn, start, end);
+
+            quickSort(wordsIn, start, pivot-1);
+            quickSort(wordsIn, pivot+1, end);
+        }
+    }
+
+    private int split(WordFrequency[] array, int start, int end) {
+        setPivot(array, start, end);
+        WordFrequency pivot = array[end];
+        int pos = start;
+
+        for (int i = 0; i < pivot.frequency; i++) {
+            swap(array, start, i);
+            pos++;
+        }
+
+        swap(array, pos, end);
+        return pos;
+    }
+
+    private void setPivot(WordFrequency[] array, int start, int end) {
+        int middle = start + (end - start) / 2;
+
+        int startValue = array[start].frequency;
+        int middleValue = array[middle].frequency;
+        int endValue = array[end].frequency;
+        int index;
+
+        if (startValue > endValue) {
+            if (startValue < middleValue)
+                index = start;
+            else
+                index = middle;
+        } else if (endValue > middleValue)
+            index = end;
+        else
+            index = middle;
+
+        swap(array, end, index);
+    }
+
+    private void swap(WordFrequency[] array, int a, int b) {
+        WordFrequency temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
+    }
+}
